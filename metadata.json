@@ -1,0 +1,5 @@
+{
+  "name": "Diário de Classe Inteligente",
+  "description": "Um aplicativo para professores registrarem a frequência dos alunos e enviarem notificações de ausência por e-mail, com resumos gerados por IA para os pais.",
+  "requestFramePermissions": []
+}
