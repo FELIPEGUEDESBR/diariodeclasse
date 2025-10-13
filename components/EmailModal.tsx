@@ -27,7 +27,7 @@ const EmailModal: React.FC<EmailModalProps> = ({ student, className, isOpen, onC
   const mailtoLink = `mailto:${student.parentEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
 
   // WhatsApp content
-  const whatsappBody = `Olá! Gostaríamos de informar que ${student.name} esteve ausente na aula de ${className} hoje. ${observations ? `Observações: ${observations}` : ''} Atenciosamente, O Professor.`.trim();
+  const whatsappBody = `Olá! Gostaríamos de informar que ${student.name} esteve ausente na aula de ${className} hoje.\n\n${observations ? `Observações:\n${observations}\n\n` : ''}Por favor, incentive ${student.name} a revisar o material para se manter em dia com a turma.\n\nAtenciosamente,\nO Professor`.trim();
   const whatsappLink = student.parentPhone
     ? `https://wa.me/${student.parentPhone.replace(/\D/g, '')}?text=${encodeURIComponent(whatsappBody)}`
     : `https://wa.me/?text=${encodeURIComponent(whatsappBody)}`;

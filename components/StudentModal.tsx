@@ -51,8 +51,12 @@ const StudentModal: React.FC<StudentModalProps> = ({ isOpen, onClose, onSave, st
         isValid = false;
     }
 
+    const phoneDigits = parentPhone.replace(/\D/g, '');
     if (!parentPhone.trim()) {
       newErrors.parentPhone = 'O telefone do responsável é obrigatório.';
+      isValid = false;
+    } else if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+      newErrors.parentPhone = 'Telefone inválido. Deve conter 10 ou 11 dígitos (incluindo DDD).';
       isValid = false;
     }
 

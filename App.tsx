@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import type { Class, Student, AttendanceRecord } from './types';
 import { AttendanceStatus } from './types';
@@ -131,7 +130,7 @@ const App: React.FC = () => {
           if (!name || !parentEmail || !parentPhone) {
             throw new Error(`Linha ${index + 1} inválida: "${row}"`);
           }
-          return { id: `${Date.now()}-${index}`, name, parentEmail, parentPhone };
+          return { id: crypto.randomUUID(), name, parentEmail, parentPhone };
         });
 
         setClasses(prevClasses => 
@@ -188,7 +187,7 @@ const App: React.FC = () => {
                         newStudents[index] = { ...newStudents[index], ...studentData } as Student;
                     }
                 } else {
-                    newStudents.push({ ...studentData, id: `${Date.now()}` } as Student);
+                    newStudents.push({ ...studentData, id: crypto.randomUUID() } as Student);
                 }
                 return { ...c, students: newStudents };
             }
@@ -218,7 +217,7 @@ const App: React.FC = () => {
         );
     } else { // Adicionando nova turma
         const newClass: Class = {
-            id: `turma-${Date.now()}`,
+            id: crypto.randomUUID(),
             name: classData.name,
             students: [],
         };
