@@ -6,7 +6,8 @@ import StudentListItem from './components/StudentListItem';
 import EmailModal from './components/EmailModal';
 import ExportModal from './components/ExportModal';
 import StudentModal from './components/StudentModal';
-import { UserGroupIcon, DocumentDownloadIcon, UploadIcon, PencilIcon, CheckIcon, PlusIcon } from './components/icons';
+import ClassModal from './components/ClassModal'; // Importado
+import { UserGroupIcon, DocumentDownloadIcon, UploadIcon, PencilIcon, PlusIcon } from './components/icons';
 
 // Mock Data - used as initial state if localStorage is empty
 const INITIAL_CLASSES: Class[] = [
@@ -14,20 +15,20 @@ const INITIAL_CLASSES: Class[] = [
     id: 'turma-a',
     name: 'Turma A - Matemática',
     students: [
-      { id: '1', name: 'Ana Silva', parentEmail: 'pais.ana@example.com' },
-      { id: '2', name: 'Bruno Costa', parentEmail: 'pais.bruno@example.com' },
-      { id: '3', name: 'Carla Dias', parentEmail: 'pais.carla@example.com' },
-      { id: '4', name: 'Daniel Faria', parentEmail: 'pais.daniel@example.com' },
-      { id: '5', name: 'Eduarda Lima', parentEmail: 'pais.eduarda@example.com' },
+      { id: '1', name: 'Ana Silva', parentEmail: 'pais.ana@example.com', parentPhone: '11987654321' },
+      { id: '2', name: 'Bruno Costa', parentEmail: 'pais.bruno@example.com', parentPhone: '21912345678' },
+      { id: '3', name: 'Carla Dias', parentEmail: 'pais.carla@example.com', parentPhone: '31988887777' },
+      { id: '4', name: 'Daniel Faria', parentEmail: 'pais.daniel@example.com', parentPhone: '41999998888' },
+      { id: '5', name: 'Eduarda Lima', parentEmail: 'pais.eduarda@example.com', parentPhone: '51977776666' },
     ],
   },
   {
     id: 'turma-b',
     name: 'Turma B - História',
     students: [
-      { id: '6', name: 'Felipe Melo', parentEmail: 'pais.felipe@example.com' },
-      { id: '7', name: 'Gabriela Nunes', parentEmail: 'pais.gabriel@example.com' },
-      { id: '8', name: 'Heitor Rocha', parentEmail: 'pais.heitor@example.com' },
+      { id: '6', name: 'Felipe Melo', parentEmail: 'pais.felipe@example.com', parentPhone: '61966665555' },
+      { id: '7', name: 'Gabriela Nunes', parentEmail: 'pais.gabriel@example.com', parentPhone: '71955554444' },
+      { id: '8', name: 'Heitor Rocha', parentEmail: 'pais.heitor@example.com', parentPhone: '81944443333' },
     ],
   },
 ];
@@ -57,13 +58,12 @@ const App: React.FC = () => {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
+  const [isClassModalOpen, setIsClassModalOpen] = useState(false); // Novo state
   const [studentToNotify, setStudentToNotify] = useState<Student | null>(null);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
-  const [isEditingClassName, setIsEditingClassName] = useState(false);
-  const [tempClassName, setTempClassName] = useState('');
+  const [editingClass, setEditingClass] = useState<Pick<Class, 'id' | 'name'> | null>(null); // Novo state
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const classNameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     try {
@@ -82,11 +82,11 @@ const App: React.FC = () => {
   }, [classes]);
 
   useEffect(() => {
-    if (isEditingClassName && classNameInputRef.current) {
-        classNameInputRef.current.focus();
+    // Garante que uma turma válida esteja selecionada ao carregar ou ao deletar turmas
+    if ((!selectedClassId || !classes.some(c => c.id === selectedClassId)) && classes.length > 0) {
+        setSelectedClassId(classes[0].id);
     }
-  }, [isEditingClassName]);
-
+  }, [classes, selectedClassId]);
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -127,11 +127,11 @@ const App: React.FC = () => {
       try {
         const rows = text.trim().split('\n');
         const newStudents: Student[] = rows.map((row, index) => {
-          const [name, parentEmail] = row.split(',').map(item => item.trim());
-          if (!name || !parentEmail) {
+          const [name, parentEmail, parentPhone] = row.split(',').map(item => item.trim());
+          if (!name || !parentEmail || !parentPhone) {
             throw new Error(`Linha ${index + 1} inválida: "${row}"`);
           }
-          return { id: `${Date.now()}-${index}`, name, parentEmail };
+          return { id: `${Date.now()}-${index}`, name, parentEmail, parentPhone };
         });
 
         setClasses(prevClasses => 
@@ -152,7 +152,7 @@ const App: React.FC = () => {
     };
     
     reader.readAsText(file);
-    event.target.value = ''; // Reset input to allow re-upload of the same file
+    event.target.value = '';
   };
 
   const handleEditStudent = (student: Student) => {
@@ -182,13 +182,13 @@ const App: React.FC = () => {
         prevClasses.map(c => {
             if (c.id === selectedClassId) {
                 const newStudents = [...c.students];
-                if (studentData.id) { // Editing existing student
+                if (studentData.id) {
                     const index = newStudents.findIndex(s => s.id === studentData.id);
                     if (index !== -1) {
-                        newStudents[index] = { ...newStudents[index], ...studentData };
+                        newStudents[index] = { ...newStudents[index], ...studentData } as Student;
                     }
-                } else { // Adding new student
-                    newStudents.push({ ...studentData, id: `${Date.now()}` });
+                } else {
+                    newStudents.push({ ...studentData, id: `${Date.now()}` } as Student);
                 }
                 return { ...c, students: newStudents };
             }
@@ -197,24 +197,37 @@ const App: React.FC = () => {
     );
   };
   
-  const handleToggleEditClassName = () => {
-    if(selectedClass) {
-        setTempClassName(selectedClass.name);
-    }
-    setIsEditingClassName(!isEditingClassName);
-  };
-
-  const handleSaveClassName = () => {
-    if (tempClassName.trim()) {
-        setClasses(prevClasses =>
-            prevClasses.map(c =>
-                c.id === selectedClassId ? { ...c, name: tempClassName.trim() } : c
-            )
-        );
-        setIsEditingClassName(false);
-    }
+  const handleAddNewClass = () => {
+    setEditingClass(null);
+    setIsClassModalOpen(true);
   };
   
+  const handleEditClass = () => {
+    if (selectedClass) {
+        setEditingClass(selectedClass);
+        setIsClassModalOpen(true);
+    }
+  };
+
+  const handleSaveClass = (classData: { id?: string; name: string }) => {
+    if (classData.id) { // Editando turma existente
+        setClasses(prevClasses =>
+            prevClasses.map(c =>
+                c.id === classData.id ? { ...c, name: classData.name } : c
+            )
+        );
+    } else { // Adicionando nova turma
+        const newClass: Class = {
+            id: `turma-${Date.now()}`,
+            name: classData.name,
+            students: [],
+        };
+        const updatedClasses = [...classes, newClass];
+        setClasses(updatedClasses);
+        setSelectedClassId(newClass.id); // Seleciona a nova turma
+    }
+  };
+
   const attendanceSummary = useMemo(() => {
     if (!selectedClass) return { total: 0, present: 0, absent: 0, unmarked: 0 };
     const students = selectedClass.students;
@@ -228,9 +241,17 @@ const App: React.FC = () => {
   if (!selectedClass) {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-700">Nenhuma turma encontrada.</h2>
-                <p className="text-gray-500 mt-2">Crie uma turma para começar.</p>
+            <div className="text-center p-8 bg-white rounded-2xl shadow-lg max-w-md">
+                <UserGroupIcon className="w-16 h-16 mx-auto text-gray-300"/>
+                <h2 className="mt-4 text-2xl font-bold text-gray-700">Nenhuma turma encontrada.</h2>
+                <p className="text-gray-500 mt-2">Crie sua primeira turma para começar a registrar a frequência.</p>
+                <button
+                    onClick={handleAddNewClass}
+                    className="mt-6 inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition shadow-sm"
+                >
+                   <PlusIcon className="w-5 h-5 mr-2"/>
+                   Criar Nova Turma
+               </button>
             </div>
         </div>
     );
@@ -257,9 +278,19 @@ const App: React.FC = () => {
                 {/* Left Column: Class Selection and Summary */}
                 <aside className="md:col-span-1 space-y-8">
                     <div>
-                        <label htmlFor="class-select" className="block text-lg font-medium text-gray-700">
-                            Selecione a Turma
-                        </label>
+                        <div className="flex justify-between items-center">
+                            <label htmlFor="class-select" className="block text-lg font-medium text-gray-700">
+                                Selecione a Turma
+                            </label>
+                             <button
+                                onClick={handleAddNewClass}
+                                className="p-2 rounded-full text-blue-600 bg-blue-100 hover:bg-blue-200 transition-colors duration-200"
+                                aria-label="Adicionar nova turma"
+                                title="Adicionar nova turma"
+                            >
+                                <PlusIcon className="w-5 h-5" />
+                            </button>
+                        </div>
                         <select
                             id="class-select"
                             value={selectedClassId}
@@ -279,7 +310,7 @@ const App: React.FC = () => {
                                 Importar Alunos (CSV)
                             </button>
                             <p className="text-xs text-gray-500 text-center">
-                                Formato: nome,email (um por linha).
+                                Formato: nome,email,telefone (um por linha).
                             </p>
                          </div>
                         <input
@@ -326,21 +357,9 @@ const App: React.FC = () => {
                         <div className="p-6 border-b border-gray-200">
                            <div className="flex justify-between items-center">
                                 <div className="flex items-center gap-2">
-                                    {isEditingClassName ? (
-                                        <input
-                                            ref={classNameInputRef}
-                                            type="text"
-                                            value={tempClassName}
-                                            onChange={(e) => setTempClassName(e.target.value)}
-                                            onBlur={handleSaveClassName}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSaveClassName()}
-                                            className="text-2xl font-bold text-gray-800 border-b-2 border-blue-500 focus:outline-none"
-                                        />
-                                    ) : (
-                                        <h2 className="text-2xl font-bold text-gray-800">{selectedClass.name}</h2>
-                                    )}
-                                    <button onClick={handleToggleEditClassName} className="text-gray-400 hover:text-blue-600">
-                                        {isEditingClassName ? <CheckIcon className="w-5 h-5"/> : <PencilIcon className="w-5 h-5"/>}
+                                    <h2 className="text-2xl font-bold text-gray-800">{selectedClass.name}</h2>
+                                    <button onClick={handleEditClass} className="text-gray-400 hover:text-blue-600">
+                                        <PencilIcon className="w-5 h-5"/>
                                     </button>
                                 </div>
                                <button 
@@ -396,6 +415,12 @@ const App: React.FC = () => {
         onClose={() => setIsStudentModalOpen(false)}
         onSave={handleSaveStudent}
         student={editingStudent}
+      />
+      <ClassModal
+        isOpen={isClassModalOpen}
+        onClose={() => setIsClassModalOpen(false)}
+        onSave={handleSaveClass}
+        classData={editingClass}
       />
       <style>{`
           @keyframes scale-in {

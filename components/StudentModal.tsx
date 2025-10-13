@@ -13,25 +13,28 @@ interface StudentModalProps {
 const StudentModal: React.FC<StudentModalProps> = ({ isOpen, onClose, onSave, student }) => {
   const [name, setName] = useState('');
   const [parentEmail, setParentEmail] = useState('');
-  const [errors, setErrors] = useState({ name: '', parentEmail: '' });
+  const [parentPhone, setParentPhone] = useState('');
+  const [errors, setErrors] = useState({ name: '', parentEmail: '', parentPhone: '' });
 
   useEffect(() => {
     if (isOpen) {
       if (student) {
         setName(student.name);
         setParentEmail(student.parentEmail);
+        setParentPhone(student.parentPhone);
       } else {
         setName('');
         setParentEmail('');
+        setParentPhone('');
       }
-      setErrors({ name: '', parentEmail: '' });
+      setErrors({ name: '', parentEmail: '', parentPhone: '' });
     }
   }, [isOpen, student]);
 
   if (!isOpen) return null;
 
   const validate = () => {
-    const newErrors = { name: '', parentEmail: '' };
+    const newErrors = { name: '', parentEmail: '', parentPhone: '' };
     let isValid = true;
 
     if (!name.trim()) {
@@ -48,13 +51,18 @@ const StudentModal: React.FC<StudentModalProps> = ({ isOpen, onClose, onSave, st
         isValid = false;
     }
 
+    if (!parentPhone.trim()) {
+      newErrors.parentPhone = 'O telefone do responsável é obrigatório.';
+      isValid = false;
+    }
+
     setErrors(newErrors);
     return isValid;
   };
 
   const handleSave = () => {
     if (validate()) {
-      onSave({ id: student?.id, name, parentEmail });
+      onSave({ id: student?.id, name, parentEmail, parentPhone });
       onClose();
     }
   };
@@ -92,6 +100,20 @@ const StudentModal: React.FC<StudentModalProps> = ({ isOpen, onClose, onSave, st
                 className={`mt-1 block w-full p-2 border rounded-lg shadow-sm ${errors.parentEmail ? 'border-red-500' : 'border-gray-300'} focus:ring-blue-500 focus:border-blue-500`}
               />
               {errors.parentEmail && <p className="text-red-500 text-xs mt-1">{errors.parentEmail}</p>}
+            </div>
+             <div>
+              <label htmlFor="parent-phone" className="block text-sm font-medium text-gray-700">
+                Telefone do Responsável
+              </label>
+              <input
+                type="tel"
+                id="parent-phone"
+                value={parentPhone}
+                onChange={(e) => setParentPhone(e.target.value)}
+                placeholder="(99) 99999-9999"
+                className={`mt-1 block w-full p-2 border rounded-lg shadow-sm ${errors.parentPhone ? 'border-red-500' : 'border-gray-300'} focus:ring-blue-500 focus:border-blue-500`}
+              />
+              {errors.parentPhone && <p className="text-red-500 text-xs mt-1">{errors.parentPhone}</p>}
             </div>
           </div>
         </div>

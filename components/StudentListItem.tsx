@@ -33,7 +33,8 @@ const StudentListItem: React.FC<StudentListItemProps> = ({ student, status, onSt
         </div>
         <div className="ml-4 overflow-hidden">
           <div className="text-sm font-medium text-gray-900 truncate">{student.name}</div>
-          <div className="text-sm text-gray-500 truncate">{student.parentEmail}</div>
+          <div className="text-xs text-gray-500 truncate">{student.parentEmail}</div>
+          <div className="text-xs text-gray-500 truncate">{student.parentPhone}</div>
         </div>
       </div>
       <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">

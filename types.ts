@@ -9,6 +9,7 @@ export interface Student {
   id: string;
   name: string;
   parentEmail: string;
+  parentPhone: string;
 }
 
 export interface Class {
@@ -20,4 +21,3 @@ export interface Class {
 export interface AttendanceRecord {
   [studentId: string]: AttendanceStatus;
 }
-   
