@@ -6,7 +6,7 @@
 
 O Diário ajuda o docente ou a coordenação escolar na tiragem de faltas, e permite a comunicação instantanea e efetiva aos pais caso o alune não apareça na aula.
 
-**Created by:** [Felipe Guedes](https://br.linkedin.com/in/felipeguedesbr)
+
 
 ## Instalação
 ### Windows
@@ -37,3 +37,4 @@ Then open your browser and navigate to:
 
 👉 [http://localhost:3000](http://localhost:3000)
 
+**Created by:** [Felipe Guedes](https://br.linkedin.com/in/felipeguedesbr)
