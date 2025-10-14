@@ -1,6 +1,6 @@
 # Diário de classe construído com Gemini 2.5 Flash
 
-![Interface](foto.jpg)
+![Interface](foto.JPG)
 
 ## Funcionalidade
 
