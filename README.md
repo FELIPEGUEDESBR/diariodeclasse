@@ -1,20 +1,39 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Diário de classe construído com Gemini 2.5 Flash
 
-# Run and deploy your AI Studio app
+![Interface](foto.jpg)
 
-This contains everything you need to run your app locally.
+## Funcionalidade
 
-View your app in AI Studio: https://ai.studio/apps/drive/11iwYANgHkKZ51tuk4BFNnzofvg1CUV-c
+O Diário ajuda o docente ou a coordenação escolar na tiragem de faltas, e permite a comunicação instantanea e efetiva aos pais caso o alune não apareça na aula.
 
-## Run Locally
+**Created by:** [Felipe Guedes](https://br.linkedin.com/in/felipeguedesbr)
 
-**Prerequisites:**  Node.js
+## Instalação
+### Windows
+- Baixe a versão .exe e execute a aplicação Classe Inteligente
+- 
+### Linux
+#### Requisitos
 
+- **Node.js** (v18 or higher recommended — [Download here](https://www.nodejs.tech/pt-br/download))  
+- **npm** or **yarn** (included with Node.js)  
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+#### Installation
+
+```bash
+# Clone the repository
+https://github.com/FELIPEGUEDESBR/diariodeclasse.git
+cd diariodeclasse
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+````
+
+Then open your browser and navigate to:
+
+👉 [http://localhost:3000](http://localhost:3000)
+
