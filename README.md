@@ -19,17 +19,17 @@ O Diário ajuda o docente ou a coordenação escolar na tiragem de faltas, e per
 - **npm** or **yarn** (included with Node.js)  
 
 ---
-#### Installation
+#### Instalação
 
 ```bash
-# Clone the repository
+# Clone o repositório
 https://github.com/FELIPEGUEDESBR/diariodeclasse.git
 cd diariodeclasse
 
-# Install dependencies
+# Instale as dependências
 npm install
 
-# Start the development server
+# Inicie o servidor
 npm run dev
 ````
 
