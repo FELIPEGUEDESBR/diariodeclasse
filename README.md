@@ -37,4 +37,4 @@ Then open your browser and navigate to:
 
 👉 [http://localhost:3000](http://localhost:3000)
 
-**Created by:** [Felipe Guedes](https://br.linkedin.com/in/felipeguedesbr)
+
