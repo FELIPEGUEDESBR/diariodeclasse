@@ -11,7 +11,7 @@ O Diário ajuda o docente ou a coordenação escolar na tiragem de faltas, e per
 ## Instalação
 ### Windows
 - Baixe a versão .exe e execute a aplicação Classe Inteligente
-- 
+
 ### Linux
 #### Requisitos
 
