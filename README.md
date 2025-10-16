@@ -4,7 +4,7 @@
 
 ## Funcionalidade
 
-O Diário ajuda o docente ou a coordenação escolar na tiragem de faltas, e permite a comunicação instantanea e efetiva aos pais caso o aluno não apareça na aula.
+O Diário ajuda o docente na tiragem de faltas.
 
 
 
